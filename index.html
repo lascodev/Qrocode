@@ -619,6 +619,27 @@
       text-transform: uppercase;
       color: var(--muted);
     }
+    
+    /* Auth Modal */
+    .auth-modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+      display: none; align-items: center; justify-content: center; z-index: 200;
+    }
+    .auth-box {
+      background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px;
+      text-align: center;
+    }
+    .auth-box h2 { font-family: 'Playfair Display', serif; margin-bottom: 20px; color: var(--text-dark); }
+    .auth-input {
+      width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px;
+      box-sizing: border-box; font-family: 'Raleway', sans-serif;
+    }
+    .auth-btn {
+      width: 100%; background: var(--text-dark); color: #fff; border: none; padding: 12px;
+      border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 10px;
+    }
+    .auth-link { color: var(--gold); cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
+    
   </style>
 </head>
 
@@ -667,6 +688,17 @@
     </div>
   </div>
 
+  <div class="auth-modal" id="auth-modal">
+    <div class="auth-box">
+      <h2 id="auth-title">Connexion Client</h2>
+      <input type="text" id="auth-user" class="auth-input" placeholder="Nom d'utilisateur">
+      <input type="password" id="auth-pass" class="auth-input" placeholder="Mot de passe">
+      <p id="auth-err" style="color:red; font-size: 0.8rem; display:none;"></p>
+      <button class="auth-btn" id="auth-submit" onclick="performAuth('login')">Se connecter</button>
+      <p class="auth-link" id="auth-switch" onclick="switchAuthMode()">Créer un compte</p>
+    </div>
+  </div>
+
   <!-- MAIN APP -->
   <div id="app">
     <!-- SIDEBAR NAV -->
@@ -685,6 +717,27 @@
           <path d="M4 2h16" />
         </svg>
         <span class="nav-label">Cocktails</span>
+      </button>
+
+      <button class="nav-item" onclick="showSection('mocktails', this)">
+        <div class="curve-top"></div>
+        <div class="curve-bottom"></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+           <path d="M12 2L12 10l-8 8h16l-8-8z" stroke="currentColor"/>
+           <path d="M6 22h12" stroke="currentColor"/>
+        </svg>
+        <span class="nav-label">Mocktails</span>
+      </button>
+
+      <button class="nav-item" onclick="showSection('tapas', this)">
+        <div class="curve-top"></div>
+        <div class="curve-bottom"></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="7" cy="7" r="3" />
+          <circle cx="17" cy="7" r="3" />
+          <circle cx="12" cy="17" r="3" />
+        </svg>
+        <span class="nav-label">Tapas</span>
       </button>
 
       <button class="nav-item" onclick="showSection('biere', this)">
@@ -710,6 +763,17 @@
         <span class="nav-label">Whisky</span>
       </button>
 
+      <button class="nav-item" onclick="showSection('spiritueux', this)">
+        <div class="curve-top"></div>
+        <div class="curve-bottom"></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 2h6v10H9z" />
+          <path d="M12 12v10" />
+          <path d="M6 22h12" />
+        </svg>
+        <span class="nav-label">Spirits</span>
+      </button>
+
       <button class="nav-item" onclick="showSection('vins', this)">
         <div class="curve-top"></div>
         <div class="curve-bottom"></div>
@@ -731,6 +795,15 @@
         </svg>
         <span class="nav-label">Softs</span>
       </button>
+
+      <button class="nav-item" onclick="showSection('extras', this)">
+        <div class="curve-top"></div>
+        <div class="curve-bottom"></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" />
+        </svg>
+        <span class="nav-label">Extras</span>
+      </button>
     </nav>
 
     <!-- CONTENT -->
@@ -743,157 +816,31 @@
         </div>
 
         <!-- ── COCKTAILS ── -->
-        <div id="cocktails" class="section active">
-          <div class="sub-cat">
-            <div class="sub-cat-title">Classiques</div>
-            <div class="item-list">
-              <div class="item">
-                <img class="item-img img-cocktail" src="assets/mojito.png" alt="Mojito Classique">
-                <div class="item-name">Mojito Classique</div>
-                <div class="item-price">4 500 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img img-cocktail" src="assets/pina_colada.png" alt="Piña Colada">
-                <div class="item-name">Piña Colada</div>
-                <div class="item-price">6 000 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img img-cocktail" src="assets/mojito.png" alt="Ti-Punch">
-                <div class="item-name">Ti-Punch</div>
-                <div class="item-price">3 500 CFA</div>
-              </div>
-            </div>
-          </div>
+        <div id="cocktails" class="section active"></div>
 
-          <div class="sub-cat">
-            <div class="sub-cat-title">Signature</div>
-            <div class="item-list">
-              <div class="item premium">
-                <img class="item-img" src="assets/old_fashioned.png" alt="Old Fashion">
-                <div class="item-name">Old Fashion</div>
-                <div class="item-price">6 000 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img img-cocktail" src="assets/tropical.png" alt="Parad'ice">
-                <div class="item-name">Parad'ice</div>
-                <div class="item-price">6 000 CFA</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- ── MOCKTAILS ── -->
+        <div id="mocktails" class="section"></div>
 
-        <!-- ── BIÈRES ── -->
-        <div id="biere" class="section">
-          <div class="sub-cat">
-            <div class="sub-cat-title">Bouteilles</div>
-            <div class="item-list">
-              <div class="item">
-                <img class="item-img img-beer" src="https://loremflickr.com/320/320/beer,glass?lock=1" alt="Regab">
-                <div class="item-name">Regab</div>
-                <div class="item-price">1 500 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img img-beer" src="https://loremflickr.com/320/320/beer,pint?lock=2" alt="1664">
-                <div class="item-name">1664</div>
-                <div class="item-price">2 000 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img img-beer" src="https://loremflickr.com/320/320/stout,beer?lock=3" alt="Guinness">
-                <div class="item-name">Guinness</div>
-                <div class="item-price">2 000 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img img-beer" src="https://loremflickr.com/320/320/lager,bottle?lock=4" alt="Heineken">
-                <div class="item-name">Heineken</div>
-                <div class="item-price">2 000 CFA</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- ── TAPAS ── -->
+        <div id="tapas" class="section"></div>
+
+        <!-- ── BIERES ── -->
+        <div id="biere" class="section"></div>
 
         <!-- ── WHISKY ── -->
-        <div id="whisky" class="section">
-          <div class="sub-cat">
-            <div class="sub-cat-title">Assemblages</div>
-            <div class="item-list">
-              <div class="item">
-                <img class="item-img img-whisky" src="https://loremflickr.com/320/320/whisky,glass?lock=1"
-                  alt="Johnnie Walker Red">
-                <div class="item-name">Johnnie Walker Red</div>
-                <div class="item-price">4 000 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img img-whisky" src="https://loremflickr.com/320/320/whiskey,bottle?lock=2"
-                  alt="Chivas Regal 12 ans">
-                <div class="item-name">Chivas Regal 12 ans</div>
-                <div class="item-price">7 500 CFA</div>
-              </div>
-              <div class="item premium">
-                <img class="item-img" src="https://loremflickr.com/320/320/lux,whisky?lock=3" alt="Blue Label">
-                <div class="item-name">Blue Label</div>
-                <div class="item-price">25 000 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img img-whisky" src="https://loremflickr.com/320/320/bourbon,glass?lock=4"
-                  alt="Jack Daniel's N°7">
-                <div class="item-name">Jack Daniel's N°7</div>
-                <div class="item-price">4 000 CFA</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div id="whisky" class="section"></div>
+
+        <!-- ── SPIRITUEUX (Rhum, Gin, Vodka, Cognac) ── -->
+        <div id="spiritueux" class="section"></div>
 
         <!-- ── VINS ── -->
-        <div id="vins" class="section">
-          <div class="sub-cat">
-            <div class="sub-cat-title">Vins & Champagnes</div>
-            <div class="item-list">
-              <div class="item">
-                <img class="item-img" src="https://loremflickr.com/320/320/redwine,glass?lock=1" alt="Chianti">
-                <div class="item-name">Chianti</div>
-                <div class="item-sub">Italie</div>
-                <div class="item-price">16 000 CFA</div>
-              </div>
-              <div class="item premium">
-                <img class="item-img" src="https://loremflickr.com/320/320/champagne,bottle?lock=1"
-                  alt="Moët & Chandon">
-                <div class="item-name">Moët & Chandon</div>
-                <div class="item-sub">Brut Impérial</div>
-                <div class="item-price">90 000 CFA</div>
-              </div>
-              <div class="item premium">
-                <img class="item-img" src="https://loremflickr.com/320/320/champagne,glass?lock=2" alt="Ruinart">
-                <div class="item-name">Ruinart</div>
-                <div class="item-sub">Champagne</div>
-                <div class="item-price">150 000 CFA</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div id="vins" class="section"></div>
 
         <!-- ── SOFTS ── -->
-        <div id="softs" class="section">
-          <div class="sub-cat">
-            <div class="sub-cat-title">Sans Alcool</div>
-            <div class="item-list">
-              <div class="item">
-                <img class="item-img" src="https://loremflickr.com/320/320/mineral,water?lock=1" alt="Andza">
-                <div class="item-name">Andza</div>
-                <div class="item-price">1 000 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img" src="https://loremflickr.com/320/320/cola,glass?lock=1" alt="Coca-Cola">
-                <div class="item-name">Coca-Cola</div>
-                <div class="item-price">2 000 CFA</div>
-              </div>
-              <div class="item">
-                <img class="item-img" src="https://loremflickr.com/320/320/orangejuice,glass?lock=1" alt="Jus Pressé">
-                <div class="item-name">Jus Pressé</div>
-                <div class="item-price">3 000 CFA</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div id="softs" class="section"></div>
+
+        <!-- ── EXTRAS (Aperitifs, Digestifs) ── -->
+        <div id="extras" class="section"></div>
 
         <div class="footer">The Peat Le Bar · Libreville · Gabon</div>
       </div><!-- /content -->
@@ -909,9 +856,146 @@
   </div><!-- /app -->
 
   <script>
+    let currentClientToken = localStorage.getItem('client_token');
+    let authMode = 'login';
+
     function openMenu() {
+      if (!currentClientToken) {
+        document.getElementById('auth-modal').style.display = 'flex';
+      } else {
+        launchMenu();
+      }
+    }
+
+    function launchMenu() {
+      document.getElementById('auth-modal').style.display = 'none';
       document.getElementById('splash').classList.add('hide');
       document.getElementById('app').classList.add('show');
+      fetchProducts();
+    }
+
+    function switchAuthMode() {
+      authMode = authMode === 'login' ? 'register' : 'login';
+      document.getElementById('auth-title').innerText = authMode === 'login' ? 'Connexion Client' : 'Inscription';
+      document.getElementById('auth-submit').innerText = authMode === 'login' ? 'Se connecter' : "S'inscrire";
+      document.getElementById('auth-switch').innerText = authMode === 'login' ? 'Créer un compte' : 'Déjà un compte ? Se connecter';
+      document.getElementById('auth-submit').setAttribute('onclick', `performAuth('${authMode}')`);
+      document.getElementById('auth-err').style.display = 'none';
+    }
+
+    async function performAuth(action) {
+      const user = document.getElementById('auth-user').value;
+      const pass = document.getElementById('auth-pass').value;
+      if (!user || !pass) return;
+
+      const res = await fetch('/api/auth/' + action, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username: user, password: pass})
+      });
+
+      const data = await res.json();
+      const errEl = document.getElementById('auth-err');
+      if (res.ok) {
+        if (action === 'register') {
+          switchAuthMode();
+          errEl.style.color = "green";
+          errEl.innerText = "Inscription réussie ! Veuillez vous connecter.";
+          errEl.style.display = 'block';
+        } else {
+          currentClientToken = data.token;
+          localStorage.setItem('client_token', data.token);
+          launchMenu();
+        }
+      } else {
+        errEl.style.color = "red";
+        errEl.innerText = data.message || "Erreur!";
+        errEl.style.display = 'block';
+      }
+    }
+
+    async function fetchProducts() {
+      try {
+        const res = await fetch('/api/products', {
+          headers: { 'Authorization': 'Bearer ' + currentClientToken }
+        });
+        if (!res.ok) {
+            localStorage.removeItem('client_token');
+            currentClientToken = null;
+            document.getElementById('auth-modal').style.display = 'flex';
+            document.getElementById('auth-err').innerText = 'Session expirée.';
+            document.getElementById('auth-err').style.color = 'red';
+            document.getElementById('auth-err').style.display = 'block';
+            return;
+        }
+        const products = await res.json();
+        renderProducts(products);
+      } catch (e) {
+        console.error("Impossible de charger les produits", e);
+      }
+    }
+
+    function renderProducts(products) {
+      const catMap = {
+        'cocktails': document.getElementById('cocktails'),
+        'mocktails': document.getElementById('mocktails'),
+        'tapas': document.getElementById('tapas'),
+        'biere': document.getElementById('biere'),
+        'whisky': document.getElementById('whisky'),
+        'rhum': document.getElementById('spiritueux'),
+        'gin': document.getElementById('spiritueux'),
+        'vodka': document.getElementById('spiritueux'),
+        'cognac': document.getElementById('spiritueux'),
+        'vins': document.getElementById('vins'),
+        'softs': document.getElementById('softs'),
+        'aperitifs': document.getElementById('extras'),
+        'digestifs': document.getElementById('extras')
+      };
+
+      for (let c in catMap) {
+        if (catMap[c]) catMap[c].innerHTML = ''; 
+      }
+
+      // Track sub-categories to create headers only once
+      products.forEach(p => {
+        let catDiv = catMap[p.category];
+        if (!catDiv) return;
+        
+        let subCatName = "Général";
+        let actualDesc = p.description;
+        if (p.description && p.description.includes(' - ')) {
+          const parts = p.description.split(' - ');
+          subCatName = parts[0];
+          actualDesc = parts.slice(1).join(' - ');
+        } else if (p.description && p.description.length < 30 && !p.description.includes(',')) {
+          subCatName = p.description;
+          actualDesc = "";
+        }
+
+        const subKey = p.category + '_' + subCatName.replace(/\s+/g, '_');
+        let itemList = catDiv.querySelector(`.item-list[data-sub="${subKey}"]`);
+        
+        if (!itemList) {
+          const subCatHtml = `
+            <div class="sub-cat">
+              <div class="sub-cat-title">${subCatName}</div>
+              <div class="item-list" data-sub="${subKey}"></div>
+            </div>
+          `;
+          catDiv.insertAdjacentHTML('beforeend', subCatHtml);
+          itemList = catDiv.querySelector(`.item-list[data-sub="${subKey}"]`);
+        }
+        
+        let pHtml = `
+          <div class="item ${p.is_premium ? 'premium' : ''}" style="animation: fadeIn 0.5s ease-out both;">
+            <img class="item-img" src="${p.image_url}" alt="${p.name}">
+            <div class="item-name">${p.name}</div>
+            ${actualDesc ? `<div class="item-sub">${actualDesc}</div>` : ''}
+            <div class="item-price">${p.price}</div>
+          </div>
+        `;
+        itemList.insertAdjacentHTML('beforeend', pHtml);
+      });
     }
 
     function showSection(id, btn) {
